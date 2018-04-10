@@ -4,6 +4,10 @@ defmodule TeslaMetadataLogger do
   require Logger
 
   def call(env, next, _opts) do
+    common_metadata = [
+      http_client_req_id: generate_request_id()
+    ]
+
     req_metadata = [
       http_client_method: env.method |> to_string() |> String.upcase(),
       http_client_url: env.url
@@ -14,7 +18,7 @@ defmodule TeslaMetadataLogger do
       http_client_req_body: normalize_body(env.body)
     ]
 
-    Logger.debug("started", req_metadata ++ req_debug_metadata)
+    Logger.debug("started", common_metadata ++ req_metadata ++ req_debug_metadata)
 
     start = System.monotonic_time()
     env = Tesla.run(env, next)
@@ -34,9 +38,12 @@ defmodule TeslaMetadataLogger do
       http_client_resp_body_bytes: body_size(env.body)
     ]
 
-    Logger.debug("completed", resp_metadata ++ resp_debug_metadata)
+    Logger.debug("completed", common_metadata ++ resp_metadata ++ resp_debug_metadata)
 
-    Logger.info("completd", req_metadata ++ resp_metadata ++ resp_info_metadata)
+    Logger.info(
+      "completd",
+      common_metadata ++ req_metadata ++ resp_metadata ++ resp_info_metadata
+    )
 
     env
   rescue
@@ -61,5 +68,16 @@ defmodule TeslaMetadataLogger do
 
   defp log_exception(%Tesla.Error{message: message, reason: reason}) do
     Logger.error(message, reason: inspect(reason))
+  end
+
+  # from Plug.RequestId
+  defp generate_request_id do
+    binary = <<
+      System.system_time(:nanoseconds)::64,
+      :erlang.phash2({node(), self()}, 16_777_216)::24,
+      :erlang.unique_integer()::32
+    >>
+
+    Base.hex_encode32(binary, case: :lower)
   end
 end
