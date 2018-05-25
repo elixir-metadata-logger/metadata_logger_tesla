@@ -16,6 +16,7 @@ defmodule TeslaMetadataLogger do
        req_metadata ++
          [
            http_client_req_headers: header_list_to_map(env.headers),
+           http_client_req_query: encode_query(env.query),
            http_client_req_body: to_string(env.body)
          ]}
     end)
@@ -73,5 +74,12 @@ defmodule TeslaMetadataLogger do
     >>
 
     Base.hex_encode32(binary, case: :lower)
+  end
+
+  # from Tesla
+  defp encode_query(query) do
+    query
+    |> Enum.flat_map(&Tesla.encode_pair/1)
+    |> URI.encode_query()
   end
 end
