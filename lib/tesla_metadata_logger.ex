@@ -4,21 +4,21 @@ defmodule TeslaMetadataLogger do
   require Logger
 
   def call(env, next, _opts) do
-    common_metadata = [
-      http_client_req_id: generate_request_id()
-    ]
+    Logger.metadata(http_client_req_id: generate_request_id())
 
     req_metadata = [
       http_client_method: env.method |> to_string() |> String.upcase(),
       http_client_url: env.url
     ]
 
-    req_debug_metadata = [
-      http_client_req_headers: normalize_headers(env.headers),
-      http_client_req_body: normalize_body(env.body)
-    ]
-
-    Logger.debug("started", common_metadata ++ req_metadata ++ req_debug_metadata)
+    Logger.debug(fn ->
+      {"started",
+       req_metadata ++
+         [
+           http_client_req_headers: header_list_to_map(env.headers),
+           http_client_req_body: to_string(env.body)
+         ]}
+    end)
 
     start = System.monotonic_time()
     result = Tesla.run(env, next)
@@ -31,38 +31,35 @@ defmodule TeslaMetadataLogger do
           http_client_status: env.status
         ]
 
-        resp_debug_metadata = [
-          http_client_resp_headers: normalize_headers(env.headers),
-          http_client_resp_body: normalize_body(env.body)
-        ]
-
-        resp_info_metadata = [
-          http_client_resp_body_bytes: body_size(env.body)
-        ]
-
-        Logger.debug("completed", common_metadata ++ resp_metadata ++ resp_debug_metadata)
+        Logger.debug(fn ->
+          {"completed",
+           resp_metadata ++
+             [
+               http_client_resp_headers: header_list_to_map(env.headers),
+               http_client_resp_body: to_string(env.body)
+             ]}
+        end)
 
         Logger.info(
           "completd",
-          common_metadata ++ req_metadata ++ resp_metadata ++ resp_info_metadata
+          req_metadata ++
+            resp_metadata ++
+            [
+              http_client_resp_body_bytes: body_size(env.body)
+            ]
         )
 
       {:error, error} ->
         Logger.error("failed", error: inspect(error))
     end
 
+    Logger.metadata(http_client_req_id: nil)
+
     result
   end
 
-  defp normalize_headers(%{} = headers),
-    do: headers |> Enum.map(fn {k, v} -> {k, [v]} end) |> Enum.into(%{})
-
-  defp normalize_headers(headers) when is_list(headers),
+  defp header_list_to_map(headers),
     do: headers |> Enum.group_by(fn {k, _v} -> k end, fn {_k, v} -> v end)
-
-  defp normalize_headers(headers), do: inspect(headers)
-
-  defp normalize_body(body), do: to_string(body)
 
   defp body_size(nil), do: 0
   defp body_size(body), do: IO.iodata_length(body)
