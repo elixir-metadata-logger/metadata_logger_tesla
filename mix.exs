@@ -19,7 +19,7 @@ defmodule TeslaMetadataLogger.MixProject do
 
   defp deps do
     [
-      {:tesla, "0.10.0"}
+      {:tesla, "1.0.0-beta.1"}
     ]
   end
 end
