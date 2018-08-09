@@ -1,4 +1,10 @@
 defmodule TeslaMetadataLogger do
+  @moduledoc """
+  Tesla Middleware to log request and response into in metadata.
+
+  It puts a map into metadata, so logger formatter *MUST* handle it.
+  Otherwise it will raise `Protocol.UndefinedError`
+  """
   @behaviour Tesla.Middleware
 
   require Logger

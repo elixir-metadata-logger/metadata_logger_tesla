@@ -24,7 +24,8 @@ defmodule TeslaMetadataLogger.MixProject do
   defp deps do
     [
       {:tesla, "~> 1.0"},
-      {:bypass, "~> 0.8", only: :test}
+      {:bypass, "~> 0.8", only: :test},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
 
