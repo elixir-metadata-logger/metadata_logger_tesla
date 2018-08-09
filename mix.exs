@@ -33,7 +33,9 @@ defmodule TeslaMetadataLogger.MixProject do
     [
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/chulkilee/tesla_metadata_logger"
+        "GitHub" => "https://github.com/chulkilee/tesla_metadata_logger",
+        "Changelog" =>
+          "https://github.com/chulkilee/tesla_metadata_logger/blob/master/CHANGELOG.md"
       },
       maintainers: ["Chulki Lee"]
     ]
