@@ -4,7 +4,7 @@ defmodule TeslaMetadataLogger.MixProject do
   def project do
     [
       app: :tesla_metadata_logger,
-      version: "0.1.0",
+      version: "0.1.1-dev",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
