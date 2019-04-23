@@ -74,7 +74,7 @@ defmodule TeslaMetadataLogger do
   # from Plug.RequestId
   defp generate_request_id do
     binary = <<
-      System.system_time(:nanoseconds)::64,
+      System.system_time(:nanosecond)::64,
       :erlang.phash2({node(), self()}, 16_777_216)::24,
       :erlang.unique_integer()::32
     >>
