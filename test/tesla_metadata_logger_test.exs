@@ -35,7 +35,7 @@ defmodule TeslaMetadataLoggerTest do
     end)
 
     client =
-      Tesla.build_client([
+      Tesla.client([
         {Tesla.Middleware.BaseUrl, "http://127.0.0.1:#{bypass.port}"},
         TeslaMetadataLogger
       ])
