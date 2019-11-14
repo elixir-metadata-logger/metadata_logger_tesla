@@ -1,6 +1,6 @@
-defmodule TeslaMetadataLoggerTest do
+defmodule MetadataLogger.TeslaTest do
   use ExUnit.Case
-  doctest TeslaMetadataLogger
+  doctest MetadataLogger.Tesla
 
   import ExUnit.CaptureLog
 
@@ -37,7 +37,7 @@ defmodule TeslaMetadataLoggerTest do
     client =
       Tesla.client([
         {Tesla.Middleware.BaseUrl, "http://127.0.0.1:#{bypass.port}"},
-        TeslaMetadataLogger
+        MetadataLogger.Tesla
       ])
 
     captured =

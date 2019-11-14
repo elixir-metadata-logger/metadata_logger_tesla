@@ -1,9 +1,9 @@
-defmodule TeslaMetadataLogger.MixProject do
+defmodule MetadataLogger.Tesla.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :tesla_metadata_logger,
+      app: :metadata_logger_tesla,
       version: "0.1.1-dev",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
@@ -33,9 +33,9 @@ defmodule TeslaMetadataLogger.MixProject do
     [
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/chulkilee/tesla_metadata_logger",
+        "GitHub" => "https://github.com/elixir-metadata-logger/metadata_logger_tesla",
         "Changelog" =>
-          "https://github.com/chulkilee/tesla_metadata_logger/blob/master/CHANGELOG.md"
+          "https://github.com/elixir-metadata-logger/metadata_logger_tesla/blob/master/CHANGELOG.md"
       },
       maintainers: ["Chulki Lee"]
     ]

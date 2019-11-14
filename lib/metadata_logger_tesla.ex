@@ -1,4 +1,4 @@
-defmodule TeslaMetadataLogger do
+defmodule MetadataLogger.Tesla do
   @moduledoc """
   Tesla Middleware to log request and response into in metadata.
 

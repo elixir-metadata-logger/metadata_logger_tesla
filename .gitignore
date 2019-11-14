@@ -6,4 +6,4 @@
 
 *.ez
 erl_crash.dump
-tesla_metadata_logger-*.tar
+metadata_logger_tesla-*.tar
